@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NovaTrad v4 — Traductor Profesional de Novelas</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Sora:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg0:#0f0f13;--bg1:#16161d;--bg2:#1e1e28;--bg3:#252530;--bg4:#2e2e3e;
+  --acc:#7c6df0;--acc2:#a594ff;--acc-gl:rgba(124,109,240,.18);
+  --t1:#e8e6f0;--t2:#a09cb8;--t3:#6b6780;
+  --bd:rgba(255,255,255,.07);--bd2:rgba(124,109,240,.25);
+  --ok:#4ecb94;--warn:#f0b86e;--err:#f07070;
+  --ui:'Sora',sans-serif;--mono:'DM Mono',monospace;
+  --novel:'Caveat',cursive;
+  --cr:#FDFCF0;--ct:#2c2415;--ct2:#5a4a30;--cb:#e8e0c4;
+}
+body{font-family:var(--ui);background:var(--bg0);color:var(--t1);height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:13px}
+ 
+.topbar{height:48px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;z-index:5}
+.logo{font-family:var(--mono);font-size:14px;color:var(--acc2);display:flex;align-items:center;gap:7px}
+.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.vsep{width:1px;height:20px;background:var(--bd);flex-shrink:0}
+.sel{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);font-family:var(--ui);font-size:12px;padding:4px 8px;border-radius:8px;outline:none;cursor:pointer}
+.sel:hover{border-color:var(--bd2)}
+.bico{width:30px;height:30px;border-radius:8px;background:var(--bg3);border:1px solid var(--bd);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;flex-shrink:0}
+.bico:hover{background:var(--bg4);color:var(--t1);border-color:var(--bd2)}
+.bico.on{background:var(--acc-gl);border-color:var(--bd2);color:var(--acc2)}
+.ml{margin-left:auto}
+.btn-up{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px dashed var(--bd2);color:var(--acc2);border-radius:8px;padding:5px 11px;font-family:var(--ui);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-up:hover{background:var(--acc-gl);border-style:solid}
+#fi{display:none}
+.btn-ai{display:flex;align-items:center;gap:6px;background:var(--acc);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-family:var(--ui);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap}
+.btn-ai:hover{background:var(--acc2)}
+.btn-ex{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--bd);color:var(--t1);border-radius:8px;padding:5px 12px;font-family:var(--ui);font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-ex:hover{background:var(--bg4);border-color:var(--bd2)}
+.spin-wrap{display:none;align-items:center;gap:6px;font-size:11px;color:var(--acc2)}
+.spin-wrap.on{display:flex}
+.spin{width:12px;height:12px;border:2px solid var(--acc-gl);border-top-color:var(--acc2);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+ 
+.api-config{position:fixed;bottom:20px;left:20px;z-index:100;background:var(--bg2);border:1px solid var(--bd2);border-radius:12px;padding:12px;width:300px;backdrop-filter:blur(8px);font-size:11px}
+.api-config select,.api-config input{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:11px;width:100%;margin-bottom:6px}
+.api-config button{background:var(--acc);border:none;color:white;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px}
+.api-config.mini{width:auto;padding:6px 10px;cursor:pointer}
+.api-config.mini .api-detail{display:none}
+.api-config .api-detail{display:block}
+ 
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:215px;background:var(--bg1);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
+.sidebar.off{width:0;overflow:hidden}
+.sh{padding:12px 12px 8px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.sh-lbl{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.ftabs{display:flex;gap:3px;padding:7px 7px 0}
+.ftab{font-size:10px;padding:3px 7px;border-radius:4px;cursor:pointer;background:transparent;border:1px solid transparent;color:var(--t3);transition:all .12s}
+.ftab:hover{color:var(--t2)}
+.ftab.on{background:var(--bg3);border-color:var(--bd);color:var(--t1)}
+.clist{flex:1;overflow-y:auto;padding:6px}
+.clist::-webkit-scrollbar{width:3px}
+.clist::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.ci{padding:8px 9px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:7px;margin-bottom:2px;transition:background .12s}
+.ci:hover{background:var(--bg3)}
+.ci.on{background:var(--acc-gl);border:1px solid var(--bd2)}
+.cn{font-family:var(--mono);font-size:10px;color:var(--t3);min-width:22px}
+.ct{font-size:12px;color:var(--t2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci.on .ct{color:var(--t1)}
+.sd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sd-d{background:var(--ok)}
+.sd-p{background:var(--warn)}
+.sd-n{background:var(--t3)}
+.sfooter{padding:9px 8px;border-top:1px solid var(--bd)}
+.sfl{font-size:10px;color:var(--t3);display:flex;justify-content:space-between}
+.pb{height:3px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:5px}
+.pbf{height:100%;background:var(--acc);border-radius:3px;width:0%}
+ 
+.ea{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.etb{height:44px;background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 13px;gap:9px;flex-shrink:0}
+.cbadge{font-family:var(--mono);font-size:11px;background:var(--bg4);color:var(--acc2);padding:3px 8px;border-radius:8px;border:1px solid var(--bd2);white-space:nowrap}
+.dual{display:flex;flex:1;overflow:hidden}
+.pane{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.pane-l{border-right:1px solid var(--bd);position:relative}
+.ph{height:34px;background:var(--bg2);display:flex;align-items:center;padding:0 13px;gap:7px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.ph-lbl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.07em;text-transform:uppercase}
+.ph-lang{font-size:11px;color:var(--t2);background:var(--bg3);padding:2px 6px;border-radius:4px}
+.wc{margin-left:auto;font-size:10px;color:var(--t3);font-family:var(--mono)}
+.pc{flex:1;overflow-y:auto}
+.pc::-webkit-scrollbar{width:3px}
+.pc::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.src-wrap{background:var(--cr);padding:28px 32px;min-height:100%;position:relative}
+.src-title{font-family:var(--novel);font-size:28px;font-weight:600;color:var(--ct);text-align:center;margin-bottom:6px;line-height:1.3}
+.src-sub{font-family:var(--novel);font-size:16px;color:var(--ct2);text-align:center;margin-bottom:24px;font-style:italic}
+.src-div{width:50px;height:1px;background:var(--cb);margin:0 auto 22px}
+.src-body{font-family:var(--novel);font-size:14pt;line-height:1.8;color:var(--ct);white-space:pre-wrap;word-break:break-word}
+.src-body p{margin-bottom:1.1em;text-indent:2em}
+.hl{background:rgba(124,109,240,.18);border-bottom:1.5px solid var(--acc);color:#3d2fa0;border-radius:2px;cursor:help}
+.tr-wrap{background:#1a1a24;padding:28px 32px;min-height:100%}
+.tr-title{font-family:var(--novel);font-size:26px;font-weight:600;color:var(--t1);text-align:center;margin-bottom:22px;line-height:1.3;opacity:.9}
+.tr-ed{width:100%;background:transparent;border:none;outline:none;resize:none;font-family:var(--novel);font-size:14pt;line-height:1.8;color:var(--t1);caret-color:var(--acc2);min-height:380px}
+.tr-ed::placeholder{color:var(--t3);font-style:italic}
+ 
+.gp{width:255px;background:var(--bg1);border-left:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
+.gp.off{width:0;overflow:hidden}
+.gph{padding:13px 13px 9px;border-bottom:1px solid var(--bd)}
+.gpt-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.gpt{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.gi-form{display:flex;flex-direction:column;gap:5px}
+.gi{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);font-family:var(--ui);font-size:12px;padding:5px 9px;border-radius:8px;outline:none;transition:border-color .15s}
+.gi:focus{border-color:var(--bd2)}
+.gi::placeholder{color:var(--t3)}
+.btn-add{background:var(--acc-gl);border:1px solid var(--bd2);color:var(--acc2);font-family:var(--ui);font-size:11px;font-weight:500;padding:5px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .15s}
+.btn-add:hover{background:rgba(124,109,240,.28)}
+.gl{flex:1;overflow-y:auto;padding:7px}
+.gl::-webkit-scrollbar{width:3px}
+.gl::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.gitem{padding:7px 9px;border-radius:8px;border:1px solid var(--bd);background:var(--bg2);margin-bottom:5px;transition:border-color .15s}
+.gitem:hover{border-color:var(--bd2)}
+.gi-row{display:flex;align-items:center;gap:5px}
+.go{font-family:var(--mono);font-size:11px;color:var(--acc2)}
+.garr{color:var(--t3);font-size:11px}
+.gtr{font-size:12px;color:var(--t1);flex:1}
+.gcat{font-size:10px;color:var(--t3);margin-top:2px}
+.gdel{background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;opacity:0;transition:opacity .15s}
+.gitem:hover .gdel{opacity:1}
+.gdel:hover{color:var(--err)}
+.notes-sec{border-top:1px solid var(--bd)}
+.notes-lbl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;padding:9px 13px 5px;display:block}
+.notes-ta{width:100%;background:transparent;border:none;outline:none;resize:none;font-family:var(--ui);font-size:12px;color:var(--t2);line-height:1.6;padding:0 13px 10px;min-height:75px}
+.notes-ta::placeholder{color:var(--t3)}
+ 
+.dz{position:absolute;inset:0;background:rgba(15,15,19,.9);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;border:2px dashed var(--bd2);z-index:20}
+.dz.on{display:flex}
+.dz-icon{font-size:42px}
+.dz-lbl{font-size:15px;color:var(--acc2);font-weight:500}
+.dz-sub{font-size:11px;color:var(--t3)}
+ 
+.sbar{height:22px;background:var(--bg1);border-top:1px solid var(--bd);display:flex;align-items:center;padding:0 13px;gap:13px;flex-shrink:0}
+.si{font-size:10px;color:var(--t3);font-family:var(--mono);display:flex;align-items:center;gap:4px}
+.sds{width:5px;height:5px;border-radius:50%}
+.ok{background:var(--ok)}
+.am{background:var(--warn)}
+ 
+.toast{position:absolute;bottom:28px;right:20px;z-index:200;background:var(--bg1);border:1px solid var(--bd2);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--t1);display:none;align-items:center;gap:9px}
+.toast.on{display:flex}
+</style>
+</head>
+<body>
+ 
+<div class="topbar">
+  <div class="logo"><div class="logo-dot"></div>NovaTrad v4</div>
+  <div class="vsep"></div>
+  <span style="font-size:12px;color:var(--t2)">Proyecto: <strong style="color:var(--t1)" id="projName">Renacer del Espíritu Celestial</strong></span>
+  <div class="vsep"></div>
+  <select class="sel" id="selSrc" onchange="updLangLabel(); autoSave()">
+    <option value="Chinese">🇨🇳 Chino</option>
+    <option value="Japanese">🇯🇵 Japonés</option>
+    <option value="Korean">🇰🇷 Coreano</option>
+    <option value="English">🇬🇧 Inglés</option>
+  </select>
+  <span style="color:var(--t3)">→</span>
+  <select class="sel" id="selTgt" onchange="updLangLabel(); autoSave()">
+    <option value="Spanish">🇪🇸 Español</option>
+    <option value="English">🇬🇧 Inglés</option>
+    <option value="Portuguese">🇧🇷 Portugués</option>
+    <option value="French">🇫🇷 Francés</option>
+  </select>
+  <div class="vsep"></div>
+  <label class="btn-up" for="fi">
+    <i class="ti ti-upload" style="font-size:14px"></i> Subir archivo
+  </label>
+  <input type="file" id="fi" accept=".txt,.docx">
+  <div class="ml" style="display:flex;align-items:center;gap:8px">
+    <button class="bico on" id="btnSB" onclick="toggleSB()"><i class="ti ti-menu-2"></i></button>
+    <button class="bico on" id="btnGP" onclick="toggleGP()"><i class="ti ti-book"></i></button>
+  </div>
+</div>
+ 
+<div class="main">
+  <div class="sidebar" id="sb">
+    <div class="sh"><span class="sh-lbl">Capítulos</span><span style="font-size:10px;color:var(--t3)" id="chapTotal">0 total</span></div>
+    <div class="ftabs">
+      <div class="ftab on" onclick="filterC('all',this)">Todos</div>
+      <div class="ftab" onclick="filterC('done',this)"><i class="ti ti-check"></i></div>
+      <div class="ftab" onclick="filterC('progress',this)"><i class="ti ti-clock"></i></div>
+      <div class="ftab" onclick="filterC('pending',this)"><i class="ti ti-circle"></i></div>
+    </div>
+    <div class="clist" id="clist"></div>
+    <div class="sfooter"><div class="sfl"><span>Progreso</span><span id="progressCount">0 / 0</span></div><div class="pb"><div class="pbf" id="progressBar"></div></div></div>
+  </div>
+ 
+  <div class="ea">
+    <div class="etb">
+      <span class="cbadge" id="cbadge">CAP. 1</span>
+      <div class="vsep"></div>
+      <button class="btn-ai" id="btnAI" onclick="doAI()"><i class="ti ti-sparkles"></i> Traducir con IA</button>
+      <div class="spin-wrap" id="spin"><div class="spin"></div><span>Traduciendo…</span></div>
+      <div class="vsep"></div>
+      <button class="btn-ex" onclick="doExport()"><i class="ti ti-file-download"></i> Exportar .docx</button>
+      <div class="spin-wrap" id="spinEx"><div class="spin"></div><span>Generando…</span></div>
+      <span style="margin-left:auto;font-size:10px;color:var(--t3)" id="saveInfo">Guardado</span>
+    </div>
+ 
+    <div class="dual">
+      <div class="pane pane-l">
+        <div class="ph"><span class="ph-lbl">Original</span><span class="ph-lang" id="llSrc">Chino</span><span class="wc" id="wcSrc">—</span></div>
+        <div class="pc"><div class="src-wrap" id="srcWrap"><div class="src-title" id="srcTitle"></div><div class="src-sub" id="srcSub"></div><div class="src-div"></div><div class="src-body" id="srcBody"></div></div></div>
+        <div class="dz" id="dz"><div class="dz-icon"><i class="ti ti-file-text"></i></div><div class="dz-lbl">Suelta el archivo aquí</div><div class="dz-sub">.txt o .docx</div></div>
+      </div>
+      <div class="pane"><div class="ph"><span class="ph-lbl">Traducción</span><span class="ph-lang" id="llTgt">Español</span><span class="wc" id="wcTgt">0 palabras</span></div><div class="pc"><div class="tr-wrap"><div class="tr-title" id="trTitle"></div><textarea class="tr-ed" id="trEd" placeholder="Traducción aquí..." oninput="updWC(); autoSave()"></textarea></div></div></div>
+    </div>
+ 
+    <div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+  </div>
+ 
+  <div class="gp" id="gp">
+    <div class="gph"><div class="gpt-row"><span class="gpt">Glosario</span><span id="gCount">0 términos</span></div>
+    <div class="gi-form"><input class="gi" id="gOrig" placeholder="Término original"><input class="gi" id="gTrans" placeholder="Traducción"><input class="gi" id="gCat" placeholder="Categoría"><button class="btn-add" onclick="addTerm()"><i class="ti ti-plus"></i> Añadir</button></div></div>
+    <div class="gl" id="glist"></div>
+    <div class="notes-sec"><span class="notes-lbl">Notas del traductor</span><textarea class="notes-ta" id="notesTA" placeholder="Decisiones editoriales..." oninput="autoSave()"></textarea></div>
+  </div>
+</div>
+ 
+<div class="sbar">
+  <div class="si"><span class="sds ok"></span>Conectado</div>
+  <div class="si"><span class="sds am"></span><span id="statusChap">Capítulo 1</span></div>
+  <div class="si">Glosario: <span id="gCount2">0</span></div>
+  <div class="si" style="margin-left:auto">NovaTrad v4</div>
+</div>
+ 
+<div class="api-config" id="apiConfig">
+  <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>⚙️ API IA</span><button onclick="toggleApiConfig()">▼</button></div>
+  <div class="api-detail" id="apiDetail">
+    <select id="apiProvider" onchange="toggleApiKeyInput()">
+      <option value="groq">Groq</option>
+      <option value="openrouter">OpenRouter</option>
+      <option value="google">Google AI Studio</option>
+    </select>
+    <input type="password" id="apiKey" placeholder="API Key" style="width:100%">
+    <input type="text" id="modelName" placeholder="Modelo (opcional)" style="width:100%">
+    <button onclick="saveApiConfig()">💾 Guardar</button>
+    <div style="font-size:9px;margin-top:4px;color:var(--t3)"><span id="apiStatus">⚪ No configurada</span></div>
+  </div>
+</div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script>
+// ==================== DATOS POR DEFECTO ====================
+let CHAPS = [
+  {n:1,t:"El Despertar del Dragón",s:"done"},{n:2,t:"El Valle Prohibido",s:"done"},
+  {n:3,t:"Semillas del Destino",s:"done"},{n:4,t:"El Anciano Misterioso",s:"done"},
+  {n:5,t:"Primer Rompimiento",s:"done"},{n:6,t:"El Torneo de los Cien Estilos",s:"done"},
+  {n:7,t:"Hermanos de Juramento",s:"done"},{n:8,t:"La Torre de Jade",s:"done"},
+  {n:9,t:"Sangre de Fénix",s:"done"},{n:10,t:"El Cultivo Oculto",s:"done"},
+  {n:11,t:"Montañas de Nubes Eternas",s:"done"},{n:12,t:"El Sello del Infierno",s:"done"},
+  {n:13,t:"La Dama del Loto Carmesí",s:"done"},{n:14,t:"Fragmentos de una Era Pasada",s:"done"},
+  {n:15,t:"El Palacio Celestial",s:"done"},{n:16,t:"Rugido del Trueno Vacío",s:"done"},
+  {n:17,t:"Caída del Gran Cultivador",s:"done"},{n:18,t:"Renacimiento en las Ruinas",s:"done"},
+  {n:19,t:"Los Cinco Sellos Supremos",s:"done"},{n:20,t:"El Qi del Dragón Antiguo",s:"progress"},
+  {n:21,t:"Camino al Pico Inmortal",s:"pending"},{n:22,t:"La Espada Sin Nombre",s:"pending"},
+  {n:23,t:"Más Allá del Cielo",s:"pending"},{n:24,t:"El Último Tributo",s:"pending"},
+];
+
+let RAW_BODY = `凌云站在悬崖边缘，感受着从深渊中涌来的古老气息。那是一种他从未体验过的灵气，浓郁而深沉，仿佛蕴含着亿万年的天地精华。
+ 
+"这就是传说中的古龙之气吗？"他低声自语，眼中闪烁着难以置信的光芒。
+ 
+林清雪站在他身旁，白色长裙随风飘动。她的修为已达到化神境巅峰，却也感受到了那股气息带来的强烈压迫感。
+ 
+"小心，凌云。古龙之气非比寻常，稍有不慎便会走火入魔。"她轻声提醒道，声音中带着一丝担忧。
+ 
+凌云深吸一口气，运转体内的玄天功法，开始缓缓吸收那古老的灵气。丹田之中，他的金色元婴微微颤动，散发出璀璨的光芒。
+ 
+突然，远处传来一声震天巨响——那是妖皇宫的长老们发现了他们的踪迹。`;
+
+let glossary = [
+  {o:"灵气",tr:"Qi espiritual",c:"Cultivo"},
+  {o:"凌云",tr:"Ling Yun",c:"Personaje"},
+  {o:"林清雪",tr:"Lin Qingxue",c:"Personaje"},
+  {o:"化神境",tr:"Etapa Transformación Divina",c:"Nivel"},
+  {o:"玄天功法",tr:"Técnica Xuantian Celestial",c:"Arte"},
+  {o:"元婴",tr:"Bebé Yuan / Nascent Soul",c:"Cultivo"},
+  {o:"妖皇宫",tr:"Palacio del Rey Demonio",c:"Facción"},
+  {o:"丹田",tr:"Campo de Cinabrio",c:"Cultivo"},
+];
+
+let translations = {};
+let currentChap = 20;
+let rawBody = RAW_BODY;
+let curFilter = 'all';
+let tipEl = null;
+let autoSaveTimer = null;
+
+// ==================== API CONFIG ====================
+let apiProvider = 'groq';
+let apiKey = '';
+let apiModel = '';
+
+function toggleApiConfig() {
+  const detail = document.getElementById('apiDetail');
+  const btn = document.querySelector('.api-config button');
+  if (detail.style.display === 'none') {
+    detail.style.display = 'block';
+    btn.textContent = '▼';
+    document.querySelector('.api-config').classList.remove('mini');
+  } else {
+    detail.style.display = 'none';
+    btn.textContent = '▲';
+    document.querySelector('.api-config').classList.add('mini');
+  }
+}
+
+function toggleApiKeyInput() {
+  apiProvider = document.getElementById('apiProvider').value;
+  const modelInput = document.getElementById('modelName');
+  if (apiProvider === 'groq') modelInput.placeholder = 'Ej: mixtral-8x7b-32768 (opcional)';
+  else if (apiProvider === 'openrouter') modelInput.placeholder = 'Ej: openai/gpt-3.5-turbo';
+  else modelInput.placeholder = 'Ej: gemini-1.5-flash (opcional)';
+}
+
+function saveApiConfig() {
+  apiProvider = document.getElementById('apiProvider').value;
+  apiKey = document.getElementById('apiKey').value;
+  apiModel = document.getElementById('modelName').value;
+  localStorage.setItem('novatrad_api_config', JSON.stringify({ provider: apiProvider, key: apiKey, model: apiModel }));
+  document.getElementById('apiStatus').innerHTML = '✅ Configurada';
+  document.getElementById('apiStatus').style.color = 'var(--ok)';
+  toast('🔑', 'API configurada correctamente');
+}
+
+function loadApiConfig() {
+  const saved = localStorage.getItem('novatrad_api_config');
+  if (saved) {
+    try {
+      const cfg = JSON.parse(saved);
+      apiProvider = cfg.provider || 'groq';
+      apiKey = cfg.key || '';
+      apiModel = cfg.model || '';
+      document.getElementById('apiProvider').value = apiProvider;
+      document.getElementById('apiKey').value = apiKey;
+      document.getElementById('modelName').value = apiModel;
+      document.getElementById('apiStatus').innerHTML = '✅ Configurada';
+      document.getElementById('apiStatus').style.color = 'var(--ok)';
+    } catch(e) {}
+  }
+}
+
+async function callAI(systemPrompt, userPrompt) {
+  if (!apiKey) {
+    toast('⚠️', 'Configura tu API Key primero (click en ⚙️ abajo a la izquierda)');
+    throw new Error('No API key');
+  }
+  
+  let url, headers, body;
+  const model = apiModel || (apiProvider === 'groq' ? 'mixtral-8x7b-32768' : apiProvider === 'openrouter' ? 'openai/gpt-3.5-turbo' : 'gemini-1.5-flash');
+  
+  if (apiProvider === 'groq') {
+    url = 'https://api.groq.com/openai/v1/chat/completions';
+    headers = { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
+    body = JSON.stringify({ model, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] });
+  } else if (apiProvider === 'openrouter') {
+    url = 'https://openrouter.ai/api/v1/chat/completions';
+    headers = { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
+    body = JSON.stringify({ model, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] });
+  } else if (apiProvider === 'google') {
+    url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    headers = { 'Content-Type': 'application/json' };
+    body = JSON.stringify({ contents: [{ parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }] });
+  }
+  
+  const resp = await fetch(url, { method: 'POST', headers, body });
+  if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+  const data = await resp.json();
+  
+  if (apiProvider === 'google') return data.candidates[0].content.parts[0].text;
+  return data.choices[0].message.content;
+}
+
+// ==================== PERSISTENCIA LOCAL ====================
+function autoSave() {
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    saveProjectState();
+    document.getElementById('saveInfo').textContent = 'Guardado ahora';
+    setTimeout(() => { if(document.getElementById('saveInfo')) document.getElementById('saveInfo').textContent = 'Guardado'; }, 2000);
+  }, 1000);
+}
+
+function saveProjectState() {
+  const state = {
+    glossary: glossary,
+    notes: document.getElementById('notesTA').value,
+    translations: translations,
+    currentChap: currentChap,
+    rawBody: rawBody,
+    srcTitle: document.getElementById('srcTitle').textContent,
+    trTitle: document.getElementById('trTitle').textContent,
+    timestamp: Date.now()
+  };
+  localStorage.setItem('novatrad_project', JSON.stringify(state));
+  localStorage.setItem('novatrad_chapters', JSON.stringify(CHAPS));
+}
+
+function loadProjectState() {
+  const saved = localStorage.getItem('novatrad_project');
+  if (saved) {
+    try {
+      const state = JSON.parse(saved);
+      glossary = state.glossary || glossary;
+      document.getElementById('notesTA').value = state.notes || '';
+      translations = state.translations || {};
+      currentChap = state.currentChap || 20;
+      if (state.rawBody) rawBody = state.rawBody;
+      if (state.srcTitle) document.getElementById('srcTitle').textContent = state.srcTitle;
+      if (state.trTitle) document.getElementById('trTitle').textContent = state.trTitle
