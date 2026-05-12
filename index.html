@@ -192,7 +192,7 @@ body{font-family:var(--ui);background:var(--bg0);color:var(--t1);height:100vh;di
  
   <div class="ea">
     <div class="etb">
-      <span class="cbadge" id="cbadge">CAP. 1</span>
+      <span class="cbadge" id="cbadge">CAP. 20</span>
       <div class="vsep"></div>
       <button class="btn-ai" id="btnAI" onclick="doAI()"><i class="ti ti-sparkles"></i> Traducir con IA</button>
       <div class="spin-wrap" id="spin"><div class="spin"></div><span>Traduciendo…</span></div>
@@ -205,10 +205,10 @@ body{font-family:var(--ui);background:var(--bg0);color:var(--t1);height:100vh;di
     <div class="dual">
       <div class="pane pane-l">
         <div class="ph"><span class="ph-lbl">Original</span><span class="ph-lang" id="llSrc">Chino</span><span class="wc" id="wcSrc">—</span></div>
-        <div class="pc"><div class="src-wrap" id="srcWrap"><div class="src-title" id="srcTitle"></div><div class="src-sub" id="srcSub"></div><div class="src-div"></div><div class="src-body" id="srcBody"></div></div></div>
+        <div class="pc"><div class="src-wrap" id="srcWrap"><div class="src-title" id="srcTitle">第二十章：古龙之气</div><div class="src-sub" id="srcSub">El Qi del Dragón Antiguo</div><div class="src-div"></div><div class="src-body" id="srcBody"></div></div></div>
         <div class="dz" id="dz"><div class="dz-icon"><i class="ti ti-file-text"></i></div><div class="dz-lbl">Suelta el archivo aquí</div><div class="dz-sub">.txt o .docx</div></div>
       </div>
-      <div class="pane"><div class="ph"><span class="ph-lbl">Traducción</span><span class="ph-lang" id="llTgt">Español</span><span class="wc" id="wcTgt">0 palabras</span></div><div class="pc"><div class="tr-wrap"><div class="tr-title" id="trTitle"></div><textarea class="tr-ed" id="trEd" placeholder="Traducción aquí..." oninput="updWC(); autoSave()"></textarea></div></div></div>
+      <div class="pane"><div class="ph"><span class="ph-lbl">Traducción</span><span class="ph-lang" id="llTgt">Español</span><span class="wc" id="wcTgt">0 palabras</span></div><div class="pc"><div class="tr-wrap"><div class="tr-title" id="trTitle">Capítulo Veinte: El Qi del Dragón Antiguo</div><textarea class="tr-ed" id="trEd" placeholder="Traducción aquí..." oninput="updWC(); autoSave()"></textarea></div></div></div>
     </div>
  
     <div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
@@ -224,7 +224,7 @@ body{font-family:var(--ui);background:var(--bg0);color:var(--t1);height:100vh;di
  
 <div class="sbar">
   <div class="si"><span class="sds ok"></span>Conectado</div>
-  <div class="si"><span class="sds am"></span><span id="statusChap">Capítulo 1</span></div>
+  <div class="si"><span class="sds am"></span><span id="statusChap">Capítulo 20</span></div>
   <div class="si">Glosario: <span id="gCount2">0</span></div>
   <div class="si" style="margin-left:auto">NovaTrad v4</div>
 </div>
@@ -378,40 +378,33 @@ async function callAI(systemPrompt, userPrompt) {
   return data.choices[0].message.content;
 }
 
-// ==================== PERSISTENCIA LOCAL ====================
-function autoSave() {
-  if (autoSaveTimer) clearTimeout(autoSaveTimer);
-  autoSaveTimer = setTimeout(() => {
-    saveProjectState();
-    document.getElementById('saveInfo').textContent = 'Guardado ahora';
-    setTimeout(() => { if(document.getElementById('saveInfo')) document.getElementById('saveInfo').textContent = 'Guardado'; }, 2000);
-  }, 1000);
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
 }
 
-function saveProjectState() {
-  const state = {
-    glossary: glossary,
-    notes: document.getElementById('notesTA').value,
-    translations: translations,
-    currentChap: currentChap,
-    rawBody: rawBody,
-    srcTitle: document.getElementById('srcTitle').textContent,
-    trTitle: document.getElementById('trTitle').textContent,
-    timestamp: Date.now()
-  };
-  localStorage.setItem('novatrad_project', JSON.stringify(state));
-  localStorage.setItem('novatrad_chapters', JSON.stringify(CHAPS));
-}
-
-function loadProjectState() {
-  const saved = localStorage.getItem('novatrad_project');
-  if (saved) {
-    try {
-      const state = JSON.parse(saved);
-      glossary = state.glossary || glossary;
-      document.getElementById('notesTA').value = state.notes || '';
-      translations = state.translations || {};
-      currentChap = state.currentChap || 20;
-      if (state.rawBody) rawBody = state.rawBody;
-      if (state.srcTitle) document.getElementById('srcTitle').textContent = state.srcTitle;
-      if (state.trTitle) document.getElementById('trTitle').textContent = state.trTitle
+// ==================== RENDERIZADO ====================
+function renderBodyText() {
+  const bodyDiv = document.getElementById('srcBody');
+  const paras = rawBody.split(/\n\n+/);
+  
+  if (!glossary.length) {
+    bodyDiv.innerHTML = paras.map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
+    return;
+  }
+  
+  const sorted = [...glossary].sort((a,b) => b.o.length - a.o.length);
+  
+  bodyDiv.innerHTML = paras.map(p => {
+    let text = p.trim();
+    if (!text) return '';
+    let result = escapeHtml(text);
+    for (let g of sorted) {
+      const escapedTerm = escapeHtml(g.o);
+      const regex = new RegExp(`(${escapedTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'g');
+      result = result.replace(regex, `<span class="hl" data-o="${escapeHtml(g.o)}" data
