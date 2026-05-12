@@ -3,94 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NovaTrad — Traductor de Novelas</title>
+<title>NovaTrad — Traductor de Novelas (Coreano/Chino/Japonés)</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Sora:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg0:#0f0f13;--bg1:#16161d;--bg2:#1e1e28;--bg3:#252530;--bg4:#2e2e3e;
-  --acc:#7c6df0;--acc2:#a594ff;--acc-gl:rgba(124,109,240,.18);
+  --acc:#7c6df0;--acc2:#a594ff;--acc-gl:rgba(124,109,240,.15);
   --t1:#e8e6f0;--t2:#a09cb8;--t3:#6b6780;
-  --bd:rgba(255,255,255,.07);--bd2:rgba(124,109,240,.25);
+  --bd:rgba(255,255,255,.07);--bd2:rgba(124,109,240,.3);
   --ok:#4ecb94;--warn:#f0b86e;--err:#f07070;
   --ui:'Sora',sans-serif;--mono:'DM Mono',monospace;
   --novel:'Caveat',cursive;
   --cr:#FDFCF0;--ct:#2c2415;--ct2:#5a4a30;
 }
 body{font-family:var(--ui);background:var(--bg0);color:var(--t1);height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:13px}
-.topbar{height:48px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0}
+.topbar{height:48px;background:var(--bg1);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;flex-wrap:wrap}
 .logo{font-family:var(--mono);font-size:14px;color:var(--acc2);display:flex;align-items:center;gap:7px}
 .logo-dot{width:7px;height:7px;border-radius:50%;background:var(--acc)}
 .vsep{width:1px;height:20px;background:var(--bd)}
-.sel{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);padding:4px 8px;border-radius:8px;cursor:pointer}
+.sel{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);padding:4px 8px;border-radius:8px;cursor:pointer;font-size:12px}
 .bico{width:30px;height:30px;border-radius:8px;background:var(--bg3);border:1px solid var(--bd);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .bico.on{background:var(--acc-gl);border-color:var(--bd2);color:var(--acc2)}
 .ml{margin-left:auto}
-.btn-up{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px dashed var(--bd2);color:var(--acc2);border-radius:8px;padding:5px 11px;cursor:pointer}
-.btn-ai{display:flex;align-items:center;gap:6px;background:var(--acc);color:#fff;border:none;border-radius:8px;padding:5px 12px;cursor:pointer}
+.btn-up{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px dashed var(--bd2);color:var(--acc2);border-radius:8px;padding:5px 11px;cursor:pointer;font-size:12px}
+.btn-ai{display:flex;align-items:center;gap:6px;background:var(--acc);color:#fff;border:none;border-radius:8px;padding:5px 12px;cursor:pointer;font-weight:500}
 .btn-ex{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--bd);color:var(--t1);border-radius:8px;padding:5px 12px;cursor:pointer}
 .spin-wrap{display:none;align-items:center;gap:6px}
 .spin-wrap.on{display:flex}
 .spin{width:12px;height:12px;border:2px solid var(--acc-gl);border-top-color:var(--acc2);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .main{display:flex;flex:1;overflow:hidden}
-.sidebar{width:200px;background:var(--bg1);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar{width:200px;background:var(--bg1);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
 .sidebar.off{width:0;overflow:hidden}
-.sh{padding:12px;border-bottom:1px solid var(--bd)}
+.sh{padding:12px;border-bottom:1px solid var(--bd);font-weight:600;font-size:11px}
 .clist{flex:1;overflow-y:auto;padding:6px}
 .ci{padding:8px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:7px;margin-bottom:2px}
 .ci.on{background:var(--acc-gl);border:1px solid var(--bd2)}
 .cn{font-family:var(--mono);font-size:10px;color:var(--t3);min-width:22px}
-.ct{font-size:12px;color:var(--t2);flex:1}
+.ct{font-size:12px;color:var(--t2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sd{width:6px;height:6px;border-radius:50%}
 .sd-d{background:var(--ok)}
 .sd-p{background:var(--warn)}
 .sd-n{background:var(--t3)}
-.sfooter{padding:9px;border-top:1px solid var(--bd)}
+.sfooter{padding:9px;border-top:1px solid var(--bd);font-size:10px}
 .pb{height:3px;background:var(--bg3);border-radius:3px;margin-top:5px}
 .pbf{height:100%;background:var(--acc);border-radius:3px;width:0%}
-
 .ea{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.etb{height:44px;background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 13px;gap:9px;flex-shrink:0}
+.etb{height:44px;background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 13px;gap:9px;flex-shrink:0;flex-wrap:wrap}
+.cbadge{font-family:var(--mono);font-size:11px;background:var(--bg4);color:var(--acc2);padding:3px 8px;border-radius:8px;border:1px solid var(--bd2)}
 .dual{display:flex;flex:1;overflow:hidden}
 .pane{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .pane-l{border-right:1px solid var(--bd)}
-.ph{height:34px;background:var(--bg2);display:flex;align-items:center;padding:0 13px;border-bottom:1px solid var(--bd)}
+.ph{height:34px;background:var(--bg2);display:flex;align-items:center;padding:0 13px;border-bottom:1px solid var(--bd);font-size:11px;gap:8px}
 .src-wrap{background:var(--cr);padding:28px 32px;min-height:100%}
 .src-title{font-family:var(--novel);font-size:28px;font-weight:600;color:var(--ct);text-align:center;margin-bottom:20px}
-.src-body{font-family:var(--novel);font-size:14pt;line-height:1.8;color:var(--ct);white-space:pre-wrap}
+.src-body{font-family:var(--novel);font-size:14pt;line-height:1.8;color:var(--ct);white-space:pre-wrap;word-break:break-word}
 .src-body p{margin-bottom:1em;text-indent:2em}
 .tr-wrap{background:#1a1a24;padding:28px 32px;min-height:100%}
 .tr-title{font-family:var(--novel);font-size:26px;font-weight:600;color:var(--t1);text-align:center;margin-bottom:20px}
-.tr-ed{width:100%;background:transparent;border:none;outline:none;font-family:var(--novel);font-size:14pt;line-height:1.8;color:var(--t1);min-height:400px;resize:none}
-
-.gp{width:250px;background:var(--bg1);border-left:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0}
+.tr-ed{width:100%;background:transparent;border:none;outline:none;font-family:var(--novel);font-size:14pt;line-height:1.8;color:var(--t1);min-height:500px;resize:none}
+.gp{width:260px;background:var(--bg1);border-left:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
 .gp.off{width:0;overflow:hidden}
-.gph{padding:13px;border-bottom:1px solid var(--bd)}
+.gph{padding:13px;border-bottom:1px solid var(--bd);font-weight:600}
 .gl{flex:1;overflow-y:auto;padding:7px}
-.gitem{padding:7px;border-radius:8px;border:1px solid var(--bd);background:var(--bg2);margin-bottom:5px}
-.gi-row{display:flex;align-items:center;gap:5px}
+.gitem{padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg2);margin-bottom:5px}
+.gi-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .go{font-family:var(--mono);font-size:11px;color:var(--acc2)}
 .gtr{font-size:12px;color:var(--t1);flex:1}
-.gdel{background:none;border:none;color:var(--t3);cursor:pointer;padding:0 5px}
+.gdel{background:none;border:none;color:var(--t3);cursor:pointer;padding:0 5px;font-size:16px}
 .gcat{font-size:10px;color:var(--t3);margin-top:4px}
-.notes-ta{width:100%;background:transparent;border:none;outline:none;font-family:var(--ui);font-size:12px;color:var(--t2);padding:13px;min-height:80px;resize:none}
-
+.notes-ta{width:100%;background:transparent;border:none;outline:none;font-family:var(--ui);font-size:12px;color:var(--t2);padding:13px;min-height:80px;resize:none;border-top:1px solid var(--bd)}
 .sbar{height:22px;background:var(--bg1);border-top:1px solid var(--bd);display:flex;align-items:center;padding:0 13px;gap:13px}
 .si{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:4px}
 .sds{width:5px;height:5px;border-radius:50%}
 .ok{background:var(--ok)}
 .am{background:var(--warn)}
-
-.toast{position:fixed;bottom:28px;right:20px;z-index:200;background:var(--bg1);border:1px solid var(--bd2);border-radius:10px;padding:10px 16px;font-size:12px;display:none}
+.toast{position:fixed;bottom:28px;right:20px;z-index:200;background:var(--bg1);border:1px solid var(--bd2);border-radius:10px;padding:10px 16px;font-size:12px;display:none;align-items:center;gap:8px}
 .toast.on{display:flex}
-
-.api-panel{position:fixed;bottom:20px;left:20px;z-index:100;background:var(--bg2);border:1px solid var(--bd2);border-radius:12px;padding:10px;width:260px;font-size:11px}
+.api-panel{position:fixed;bottom:20px;left:20px;z-index:100;background:var(--bg2);border:1px solid var(--bd2);border-radius:12px;padding:10px;width:280px;font-size:11px}
 .api-panel input,.api-panel select{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);padding:5px;border-radius:6px;width:100%;margin-bottom:5px}
 .api-panel button{background:var(--acc);border:none;color:white;padding:4px 8px;border-radius:6px;cursor:pointer}
-.api-mini{position:fixed;bottom:20px;left:20px;background:var(--bg2);border:1px solid var(--bd2);border-radius:20px;padding:6px 12px;cursor:pointer;z-index:100;font-size:11px}
+.input-glosario{display:flex;gap:5px;padding:8px;border-bottom:1px solid var(--bd)}
+.input-glosario input{flex:1;background:var(--bg3);border:1px solid var(--bd);color:var(--t1);padding:5px;border-radius:6px}
+.hl{background:rgba(124,109,240,.2);border-bottom:1px solid var(--acc);border-radius:3px;cursor:pointer}
+.pc{overflow-y:auto;flex:1}
 </style>
 </head>
 <body>
@@ -98,132 +95,97 @@ body{font-family:var(--ui);background:var(--bg0);color:var(--t1);height:100vh;di
 <div class="topbar">
   <div class="logo"><div class="logo-dot"></div>NovaTrad</div>
   <div class="vsep"></div>
-  <select class="sel" id="selSrc" onchange="cambiarIdioma()">
-    <option value="Chinese">🇨🇳 Chino</option>
+  <select class="sel" id="selSrc" onchange="actualizarIdioma()">
     <option value="Korean">🇰🇷 Coreano</option>
+    <option value="Chinese">🇨🇳 Chino</option>
     <option value="Japanese">🇯🇵 Japonés</option>
   </select>
   <span>→</span>
-  <select class="sel" id="selTgt" onchange="cambiarIdioma()">
+  <select class="sel" id="selTgt" onchange="actualizarIdioma()">
     <option value="Spanish">🇪🇸 Español</option>
     <option value="English">🇬🇧 Inglés</option>
   </select>
-  <label class="btn-up" for="fi">📂 Subir archivo</label>
-  <input type="file" id="fi" accept=".txt,.docx" style="display:none">
+  <label class="btn-up" for="fileInput">📂 Subir novela</label>
+  <input type="file" id="fileInput" accept=".txt,.docx" style="display:none">
   <div class="ml">
-    <button class="bico" id="btnSB" onclick="toggleSB()">📋</button>
-    <button class="bico" id="btnGP" onclick="toggleGP()">📖</button>
+    <button class="bico" id="btnSB" onclick="toggleSidebar()">📋</button>
+    <button class="bico" id="btnGP" onclick="toggleGlosario()">📖</button>
   </div>
 </div>
 
 <div class="main">
-  <div class="sidebar" id="sb">
+  <div class="sidebar" id="sidebar">
     <div class="sh">📑 CAPÍTULOS</div>
-    <div class="clist" id="clist"></div>
+    <div class="clist" id="chapterList"></div>
     <div class="sfooter">
-      <div class="sfl">Progreso <span id="progressCount">0/0</span></div>
+      <div>Progreso <span id="progressText">0/0</span></div>
       <div class="pb"><div class="pbf" id="progressBar"></div></div>
     </div>
   </div>
 
   <div class="ea">
     <div class="etb">
-      <span id="cbadge">CAP. 20</span>
-      <button class="btn-ai" onclick="traducirIA()">✨ Traducir con IA</button>
-      <div class="spin-wrap" id="spin"><div class="spin"></div><span>Traduciendo...</span></div>
-      <button class="btn-ex" onclick="exportarDOC()">📎 Exportar</button>
-      <span style="margin-left:auto;font-size:10px;color:var(--t3)" id="saveInfo">💾 Guardado</span>
+      <span class="cbadge" id="chapterBadge">CAP. 1</span>
+      <button class="btn-ai" onclick="traducirTexto()">✨ Traducir todo con IA</button>
+      <div class="spin-wrap" id="spinAI"><div class="spin"></div><span>Traduciendo...</span></div>
+      <button class="btn-ex" onclick="exportarTraduccion()">📎 Exportar .doc</button>
+      <span style="margin-left:auto;font-size:10px" id="saveStatus">💾</span>
     </div>
     <div class="dual">
       <div class="pane pane-l">
-        <div class="ph">📖 ORIGINAL - <span id="labelSrc">Chino</span></div>
-        <div class="pc"><div class="src-wrap"><div class="src-title" id="srcTitle">第二十章：古龙之气</div><div class="src-body" id="srcBody"></div></div></div>
+        <div class="ph">📖 ORIGINAL - <span id="srcLangLabel">Coreano</span></div>
+        <div class="pc"><div class="src-wrap"><div class="src-title" id="srcTitle">Capítulo 1</div><div class="src-body" id="srcText"></div></div></div>
       </div>
       <div class="pane">
-        <div class="ph">🌐 TRADUCCIÓN - <span id="labelTgt">Español</span></div>
-        <div class="pc"><div class="tr-wrap"><div class="tr-title" id="trTitle">Capítulo 20: El Qi del Dragón</div><textarea class="tr-ed" id="trEd" placeholder="Escribe o pega tu traducción aquí..." oninput="guardarAuto()"></textarea></div></div>
+        <div class="ph">🌐 TRADUCCIÓN - <span id="tgtLangLabel">Español</span></div>
+        <div class="pc"><div class="tr-wrap"><div class="tr-title" id="trTitle">Capítulo 1</div><textarea class="tr-ed" id="translationText" placeholder="La traducción aparecerá aquí..." oninput="guardarTodo()"></textarea></div></div>
       </div>
     </div>
   </div>
 
-  <div class="gp" id="gp">
-    <div class="gph"><strong>📚 GLOSARIO</strong> <span id="gCount" style="float:right">0</span></div>
-    <div class="gi-form" style="padding:8px;display:flex;gap:5px;border-bottom:1px solid var(--bd)">
-      <input class="gi" id="gOrig" placeholder="Término" style="flex:2;background:var(--bg3);border:1px solid var(--bd);padding:5px;border-radius:6px;color:var(--t1)">
-      <input class="gi" id="gTrans" placeholder="Traducción" style="flex:2;background:var(--bg3);border:1px solid var(--bd);padding:5px;border-radius:6px;color:var(--t1)">
-      <button class="btn-add" onclick="agregarTermino()" style="background:var(--acc-gl);border:1px solid var(--bd2);border-radius:6px;padding:5px 10px;cursor:pointer">+</button>
+  <div class="gp" id="glosarioPanel">
+    <div class="gph">📚 GLOSARIO <span id="glosarioCount" style="float:right">0</span></div>
+    <div class="input-glosario">
+      <input type="text" id="termOriginal" placeholder="Término original">
+      <input type="text" id="termTraduccion" placeholder="Traducción">
+      <button onclick="agregarGlosario()" style="background:var(--acc);border:none;border-radius:6px;padding:5px 10px;cursor:pointer">+</button>
     </div>
-    <div class="gl" id="glist"></div>
-    <textarea class="notes-ta" id="notesTA" placeholder="Notas del traductor..." oninput="guardarAuto()"></textarea>
+    <div class="gl" id="glosarioList"></div>
+    <textarea class="notes-ta" id="notesText" placeholder="Notas del traductor..." oninput="guardarTodo()"></textarea>
   </div>
 </div>
 
 <div class="sbar">
-  <div class="si"><span class="sds ok"></span>Online</div>
-  <div class="si">Glosario: <span id="gCount2">0</span></div>
-  <div class="si" style="margin-left:auto">v4.0</div>
+  <div class="si"><span class="sds ok"></span> Listo</div>
+  <div class="si">📖 <span id="statsWords">0</span> palabras</div>
+  <div class="si" style="margin-left:auto">v5.0</div>
 </div>
 
 <div id="apiPanel" class="api-panel">
   <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-    <span>🔑 API IA</span>
-    <button onclick="toggleApiPanel()" style="background:none;border:none;color:var(--t2);cursor:pointer">▼</button>
+    <span>🔑 API Key (Groq)</span>
+    <button onclick="toggleApi()" style="background:none;border:none;color:var(--t2);cursor:pointer">▼</button>
   </div>
   <div id="apiDetail">
-    <select id="apiProvider">
-      <option value="groq">Groq (recomendada)</option>
-      <option value="google">Google AI Studio</option>
-    </select>
-    <input type="password" id="apiKey" placeholder="API Key (gratis en console.groq.com)">
-    <button onclick="guardarApi()">💾 Guardar</button>
-    <div style="font-size:9px;margin-top:4px"><span id="apiStatus">⚪ No configurada</span></div>
+    <input type="password" id="apiKeyInput" placeholder="API Key de Groq (gratis en console.groq.com)">
+    <button onclick="guardarApiKey()">💾 Guardar</button>
+    <div style="font-size:9px;margin-top:4px"><span id="apiStatusText">⚪ Sin configurar</span></div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
 <script>
-// ==================== DATOS GLOBALES ====================
-let capitulos = [
-  {n:1,t:"El Despertar",s:"done"},{n:2,t:"El Valle",s:"done"},{n:3,t:"Semillas",s:"done"},
-  {n:4,t:"El Anciano",s:"done"},{n:5,t:"Primer Rompimiento",s:"done"},{n:6,t:"Torneo",s:"done"},
-  {n:7,t:"Hermanos",s:"done"},{n:8,t:"Torre de Jade",s:"done"},{n:9,t:"Sangre de Fénix",s:"done"},
-  {n:10,t:"Cultivo Oculto",s:"done"},{n:11,t:"Nubes Eternas",s:"done"},{n:12,t:"Sello del Infierno",s:"done"},
-  {n:13,t:"Dama del Loto",s:"done"},{n:14,t:"Fragmentos",s:"done"},{n:15,t:"Palacio Celestial",s:"done"},
-  {n:16,t:"Rugido del Trueno",s:"done"},{n:17,t:"Caída",s:"done"},{n:18,t:"Renacimiento",s:"done"},
-  {n:19,t:"Cinco Sellos",s:"done"},{n:20,t:"Qi del Dragón Antiguo",s:"progress"},
-  {n:21,t:"Pico Inmortal",s:"pending"},{n:22,t:"Espada Sin Nombre",s:"pending"},
-  {n:23,t:"Más Allá",s:"pending"},{n:24,t:"Último Tributo",s:"pending"}
-];
-
-let textoOriginal = `凌云站在悬崖边缘，感受着从深渊中涌来的古老气息。那是一种他从未体验过的灵气，浓郁而深沉，仿佛蕴含着亿万年的天地精华。
-
-"这就是传说中的古龙之气吗？"他低声自语，眼中闪烁着难以置信的光芒。
-
-林清雪站在他身旁，白色长裙随风飘动。她的修为已达到化神境巅峰，却也感受到了那股气息带来的强烈压迫感。
-
-"小心，凌云。古龙之气非比寻常，稍有不慎便会走火入魔。"她轻声提醒道，声音中带着一丝担忧。
-
-凌云深吸一口气，运转体内的玄天功法，开始缓缓吸收那古老的灵气。丹田之中，他的金色元婴微微颤动，散发出璀璨的光芒。
-
-突然，远处传来一声震天巨响——那是妖皇宫的长老们发现了他们的踪迹。`;
-
-let glosario = [
-  {o:"灵气",tr:"Qi espiritual",c:"Cultivo"},
-  {o:"凌云",tr:"Ling Yun",c:"Personaje"},
-  {o:"林清雪",tr:"Lin Qingxue",c:"Personaje"},
-  {o:"化神境",tr:"Etapa Transformación Divina",c:"Nivel"},
-  {o:"玄天功法",tr:"Técnica Xuantian",c:"Arte"},
-  {o:"元婴",tr:"Bebé Yuan",c:"Cultivo"},
-  {o:"妖皇宫",tr:"Palacio del Rey Demonio",c:"Facción"},
-  {o:"丹田",tr:"Dantian",c:"Cultivo"}
-];
-
-let capituloActual = 20;
+// ==================== ESTADO GLOBAL ====================
+let capitulos = [];
+let capituloActual = 1;
 let traducciones = {};
+let glosario = [];
+let textoOriginalCompleto = "";
+let apiKey = "";
 
-// ==================== FUNCIONES PRINCIPALES ====================
+// ==================== FUNCIONES BASE ====================
 function escapeHtml(texto) {
-  if (!texto) return '';
+  if (!texto) return "";
   return texto.replace(/[&<>]/g, function(m) {
     if (m === '&') return '&amp;';
     if (m === '<') return '&lt;';
@@ -232,247 +194,7 @@ function escapeHtml(texto) {
   });
 }
 
-function mostrarTexto() {
-  const contenedor = document.getElementById('srcBody');
-  let parrafos = textoOriginal.split(/\n\n+/);
-  let html = '';
-  
-  for (let p of parrafos) {
-    let texto = p.trim();
-    if (texto === '') continue;
-    
-    // Aplicar resaltado del glosario
-    for (let g of glosario) {
-      let termino = g.o;
-      let regex = new RegExp(`(${termino.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'g');
-      texto = texto.replace(regex, `<span class="hl" style="background:rgba(124,109,240,.2);border-bottom:1px solid #7c6df0;border-radius:3px;cursor:help" data-trad="${escapeHtml(g.tr)}" data-cat="${escapeHtml(g.c)}">$1</span>`);
-    }
-    html += `<p>${texto}</p>`;
-  }
-  contenedor.innerHTML = html;
-  
-  // Tooltips
-  document.querySelectorAll('.hl').forEach(el => {
-    el.addEventListener('mouseenter', function(e) {
-      let tooltip = document.createElement('div');
-      tooltip.className = 'tooltip-flotante';
-      tooltip.innerHTML = `<strong>${el.textContent}</strong><br>→ ${el.dataset.trad}${el.dataset.cat ? `<br><small>${el.dataset.cat}</small>` : ''}`;
-      tooltip.style.cssText = 'position:fixed;background:#1e1e28;border:1px solid #7c6df0;border-radius:8px;padding:6px 10px;font-size:11px;z-index:1000;max-width:250px;color:#e8e6f0';
-      document.body.appendChild(tooltip);
-      let rect = el.getBoundingClientRect();
-      tooltip.style.top = rect.bottom + 5 + 'px';
-      tooltip.style.left = rect.left + 'px';
-      el.addEventListener('mouseleave', function() { tooltip.remove(); }, {once: true});
-    });
-  });
-}
-
-function renderCapitulos() {
-  const lista = document.getElementById('clist');
-  lista.innerHTML = '';
-  for (let c of capitulos) {
-    const div = document.createElement('div');
-    div.className = `ci ${c.n === capituloActual ? 'on' : ''}`;
-    div.innerHTML = `<span class="cn">${c.n}</span><span class="ct">${escapeHtml(c.t)}</span><span class="sd sd-${c.s === 'done' ? 'd' : c.s === 'progress' ? 'p' : 'n'}"></span>`;
-    div.onclick = () => cargarCapitulo(c.n);
-    lista.appendChild(div);
-  }
-  
-  let terminados = capitulos.filter(c => c.s === 'done').length;
-  document.getElementById('progressCount').innerHTML = `${terminados}/${capitulos.length}`;
-  document.getElementById('progressBar').style.width = (terminados / capitulos.length * 100) + '%';
-}
-
-function cargarCapitulo(n) {
-  capituloActual = n;
-  document.getElementById('cbadge').innerHTML = `CAP. ${n}`;
-  renderCapitulos();
-  
-  if (traducciones[n]) {
-    document.getElementById('trEd').value = traducciones[n];
-  } else {
-    document.getElementById('trEd').value = '';
-  }
-  
-  guardarAuto();
-}
-
-function renderGlosario() {
-  const lista = document.getElementById('glist');
-  lista.innerHTML = '';
-  for (let i = 0; i < glosario.length; i++) {
-    const g = glosario[i];
-    const div = document.createElement('div');
-    div.className = 'gitem';
-    div.innerHTML = `<div class="gi-row"><span class="go">${escapeHtml(g.o)}</span><span class="garr">→</span><span class="gtr">${escapeHtml(g.tr)}</span><button class="gdel" onclick="eliminarTermino(${i})">×</button></div>${g.c ? `<div class="gcat">${escapeHtml(g.c)}</div>` : ''}`;
-    lista.appendChild(div);
-  }
-  document.getElementById('gCount').innerHTML = glosario.length;
-  document.getElementById('gCount2').innerHTML = glosario.length;
-  mostrarTexto();
-  guardarAuto();
-}
-
-function agregarTermino() {
-  let orig = document.getElementById('gOrig').value.trim();
-  let trad = document.getElementById('gTrans').value.trim();
-  if (!orig || !trad) return;
-  glosario.push({o: orig, tr: trad, c: ""});
-  document.getElementById('gOrig').value = '';
-  document.getElementById('gTrans').value = '';
-  renderGlosario();
-}
-
-function eliminarTermino(i) {
-  glosario.splice(i, 1);
-  renderGlosario();
-}
-
-// ==================== IA ====================
-let apiKey = '';
-let apiProvider = 'groq';
-
-function guardarApi() {
-  apiProvider = document.getElementById('apiProvider').value;
-  apiKey = document.getElementById('apiKey').value;
-  localStorage.setItem('novatrad_api_key', apiKey);
-  localStorage.setItem('novatrad_api_provider', apiProvider);
-  document.getElementById('apiStatus').innerHTML = '✅ Configurada';
-  document.getElementById('apiStatus').style.color = '#4ecb94';
-  mostrarToast('🔑', 'API guardada');
-}
-
-function cargarApi() {
-  let savedKey = localStorage.getItem('novatrad_api_key');
-  let savedProv = localStorage.getItem('novatrad_api_provider');
-  if (savedKey) {
-    apiKey = savedKey;
-    apiProvider = savedProv || 'groq';
-    document.getElementById('apiKey').value = apiKey;
-    document.getElementById('apiProvider').value = apiProvider;
-    document.getElementById('apiStatus').innerHTML = '✅ Configurada';
-    document.getElementById('apiStatus').style.color = '#4ecb94';
-  }
-}
-
-async function traducirIA() {
-  if (!apiKey) {
-    mostrarToast('⚠️', 'Configura tu API Key primero (abajo a la izquierda)');
-    return;
-  }
-  
-  const spin = document.getElementById('spin');
-  spin.classList.add('on');
-  
-  let glosarioTexto = glosario.map(g => `${g.o} → ${g.tr}`).join('\n');
-  let prompt = `Traduce del chino al español. Usa ESTE glosario exactamente:\n${glosarioTexto}\n\nTexto a traducir:\n${textoOriginal}\n\nDevuelve SOLO la traducción, sin explicaciones.`;
-  
-  try {
-    let url, body, headers;
-    if (apiProvider === 'groq') {
-      url = 'https://api.groq.com/openai/v1/chat/completions';
-      headers = { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
-      body = JSON.stringify({ model: 'mixtral-8x7b-32768', messages: [{ role: 'user', content: prompt }] });
-    } else {
-      url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      headers = { 'Content-Type': 'application/json' };
-      body = JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] });
-    }
-    
-    let respuesta = await fetch(url, { method: 'POST', headers: headers, body: body });
-    let datos = await respuesta.json();
-    let traduccion = '';
-    
-    if (apiProvider === 'groq') {
-      traduccion = datos.choices[0].message.content;
-    } else {
-      traduccion = datos.candidates[0].content.parts[0].text;
-    }
-    
-    document.getElementById('trEd').value = traduccion;
-    traducciones[capituloActual] = traduccion;
-    guardarAuto();
-    mostrarToast('✨', 'Traducción completada');
-  } catch (error) {
-    mostrarToast('❌', 'Error: ' + error.message);
-  }
-  spin.classList.remove('on');
-}
-
-// ==================== GUARDADO ====================
-function guardarAuto() {
-  let estado = {
-    glosario: glosario,
-    notas: document.getElementById('notesTA').value,
-    traducciones: traducciones,
-    capituloActual: capituloActual,
-    textoOriginal: textoOriginal
-  };
-  localStorage.setItem('novatrad_proyecto', JSON.stringify(estado));
-  document.getElementById('saveInfo').innerHTML = '💾 Guardado';
-  setTimeout(() => { document.getElementById('saveInfo').innerHTML = '💾 Guardado'; }, 2000);
-}
-
-function cargarProyecto() {
-  let guardado = localStorage.getItem('novatrad_proyecto');
-  if (guardado) {
-    try {
-      let data = JSON.parse(guardado);
-      if (data.glosario) glosario = data.glosario;
-      if (data.notas) document.getElementById('notesTA').value = data.notas;
-      if (data.traducciones) traducciones = data.traducciones;
-      if (data.capituloActual) capituloActual = data.capituloActual;
-      if (data.textoOriginal) textoOriginal = data.textoOriginal;
-      renderGlosario();
-      renderCapitulos();
-      mostrarTexto();
-      if (traducciones[capituloActual]) {
-        document.getElementById('trEd').value = traducciones[capituloActual];
-      }
-      mostrarToast('💾', 'Proyecto cargado');
-    } catch(e) {}
-  }
-}
-
-function exportarDOC() {
-  let texto = document.getElementById('trEd').value;
-  if (!texto) { mostrarToast('⚠️', 'No hay traducción para exportar'); return; }
-  let blob = new Blob([texto], {type: 'application/msword'});
-  let url = URL.createObjectURL(blob);
-  let a = document.createElement('a');
-  a.href = url;
-  a.download = `capitulo_${capituloActual}.doc`;
-  a.click();
-  URL.revokeObjectURL(url);
-  mostrarToast('✅', 'Exportado');
-}
-
-// ==================== UTILIDADES ====================
-function cambiarIdioma() {
-  let srcLang = document.getElementById('selSrc').value;
-  let tgtLang = document.getElementById('selTgt').value;
-  document.getElementById('labelSrc').innerHTML = srcLang;
-  document.getElementById('labelTgt').innerHTML = tgtLang;
-}
-
-function toggleSB() { document.getElementById('sb').classList.toggle('off'); }
-function toggleGP() { document.getElementById('gp').classList.toggle('off'); }
-
-let apiPanelVisible = true;
-function toggleApiPanel() {
-  let detail = document.getElementById('apiDetail');
-  if (apiPanelVisible) {
-    detail.style.display = 'none';
-    apiPanelVisible = false;
-    document.querySelector('#apiPanel button').innerHTML = '▲';
-  } else {
-    detail.style.display = 'block';
-    apiPanelVisible = true;
-    document.querySelector('#apiPanel button').innerHTML = '▼';
-  }
-}
-
-function mostrarToast(icono, mensaje) {
+function mostrarToast(mensaje, icono = "✅") {
   let toast = document.getElementById('toast');
   if (!toast) {
     toast = document.createElement('div');
@@ -485,28 +207,358 @@ function mostrarToast(icono, mensaje) {
   setTimeout(() => toast.classList.remove('on'), 3000);
 }
 
-// Subir archivo
-document.getElementById('fi').addEventListener('change', function(e) {
+// ==================== DETECTAR Y DIVIDIR CAPÍTULOS ====================
+function detectarCapitulos(texto) {
+  let patrones = [
+    /(?:Chapter|Capítulo|CAPÍTULO|第[一二三四五六七八九十百千\d]+章|Ch\.|CH\.)\s*(\d+)[:\s\-]+([^\n]+)/gi,
+    /(\d+)[\.\-\s]+([^\n]+)/g,
+    /^(.+)$/gm
+  ];
+  
+  let capitulosEncontrados = [];
+  let lineas = texto.split(/\r?\n/);
+  let currentChap = null;
+  let currentContent = [];
+  
+  for (let linea of lineas) {
+    let esCapitulo = false;
+    for (let patron of patrones) {
+      let match = patron.exec(linea);
+      if (match) {
+        if (currentChap) {
+          capitulosEncontrados.push({
+            numero: currentChap.numero,
+            titulo: currentChap.titulo,
+            contenido: currentContent.join("\n").trim()
+          });
+        }
+        let num = parseInt(match[1]) || capitulosEncontrados.length + 1;
+        currentChap = { numero: num, titulo: match[2]?.trim() || `Capítulo ${num}` };
+        currentContent = [];
+        esCapitulo = true;
+        break;
+      }
+      patron.lastIndex = 0;
+    }
+    if (!esCapitulo && currentChap) {
+      currentContent.push(linea);
+    } else if (!currentChap && linea.trim()) {
+      currentChap = { numero: 1, titulo: "Capítulo 1" };
+      currentContent.push(linea);
+    }
+  }
+  
+  if (currentChap && currentContent.length) {
+    capitulosEncontrados.push({
+      numero: currentChap.numero,
+      titulo: currentChap.titulo,
+      contenido: currentContent.join("\n").trim()
+    });
+  }
+  
+  if (capitulosEncontrados.length === 0 && texto.trim()) {
+    capitulosEncontrados.push({ numero: 1, titulo: "Capítulo 1", contenido: texto.trim() });
+  }
+  
+  return capitulosEncontrados;
+}
+
+// ==================== RENDERIZAR ====================
+function renderizarTodo() {
+  let lista = document.getElementById('chapterList');
+  lista.innerHTML = "";
+  
+  for (let i = 0; i < capitulos.length; i++) {
+    let c = capitulos[i];
+    let div = document.createElement('div');
+    div.className = `ci ${c.numero === capituloActual ? 'on' : ''}`;
+    div.innerHTML = `<span class="cn">${c.numero}</span><span class="ct">${escapeHtml(c.titulo)}</span><span class="sd ${traducciones[c.numero] ? 'sd-d' : 'sd-n'}"></span>`;
+    div.onclick = () => cargarCapitulo(c.numero);
+    lista.appendChild(div);
+  }
+  
+  let terminados = Object.keys(traducciones).length;
+  document.getElementById('progressText').innerHTML = `${terminados}/${capitulos.length}`;
+  document.getElementById('progressBar').style.width = (terminados / capitulos.length * 100) + '%';
+  document.getElementById('chapterBadge').innerHTML = `CAP. ${capituloActual}`;
+  
+  let textoACargar = capitulos.find(c => c.numero === capituloActual);
+  if (textoACargar) {
+    document.getElementById('srcTitle').innerHTML = escapeHtml(textoACargar.titulo);
+    document.getElementById('trTitle').innerHTML = escapeHtml(textoACargar.titulo);
+    
+    let contenido = textoACargar.contenido;
+    let parrafos = contenido.split(/\n\n+|\n/);
+    let html = "";
+    for (let p of parrafos) {
+      let texto = escapeHtml(p.trim());
+      if (texto === "") continue;
+      for (let g of glosario) {
+        let regex = new RegExp(`(${g.o.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'g');
+        texto = texto.replace(regex, `<span class="hl" data-trad="${escapeHtml(g.tr)}">$1</span>`);
+      }
+      html += `<p>${texto}</p>`;
+    }
+    document.getElementById('srcText').innerHTML = html;
+  }
+  
+  if (traducciones[capituloActual]) {
+    document.getElementById('translationText').value = traducciones[capituloActual];
+  } else {
+    document.getElementById('translationText').value = "";
+  }
+  
+  actualizarTooltips();
+  actualizarStats();
+}
+
+function actualizarTooltips() {
+  document.querySelectorAll('.hl').forEach(el => {
+    el.onmouseenter = (e) => {
+      let tip = document.createElement('div');
+      tip.textContent = el.dataset.trad || "";
+      tip.style.cssText = 'position:fixed;background:#1e1e28;border:1px solid #7c6df0;border-radius:6px;padding:4px 8px;font-size:11px;z-index:1000';
+      document.body.appendChild(tip);
+      let rect = el.getBoundingClientRect();
+      tip.style.top = rect.bottom + 5 + 'px';
+      tip.style.left = rect.left + 'px';
+      el.onmouseleave = () => tip.remove();
+    };
+  });
+}
+
+function actualizarStats() {
+  let texto = document.getElementById('translationText').value;
+  let palabras = texto.trim() ? texto.trim().split(/\s+/).length : 0;
+  document.getElementById('statsWords').innerHTML = palabras;
+}
+
+function cargarCapitulo(numero) {
+  capituloActual = numero;
+  guardarTodo();
+  renderizarTodo();
+}
+
+// ==================== GLOSARIO ====================
+function renderizarGlosario() {
+  let lista = document.getElementById('glosarioList');
+  lista.innerHTML = "";
+  for (let i = 0; i < glosario.length; i++) {
+    let g = glosario[i];
+    let div = document.createElement('div');
+    div.className = 'gitem';
+    div.innerHTML = `<div class="gi-row"><span class="go">${escapeHtml(g.o)}</span><span class="garr">→</span><span class="gtr">${escapeHtml(g.tr)}</span><button class="gdel" onclick="eliminarGlosario(${i})">×</button></div>${g.c ? `<div class="gcat">${escapeHtml(g.c)}</div>` : ''}`;
+    lista.appendChild(div);
+  }
+  document.getElementById('glosarioCount').innerHTML = glosario.length;
+}
+
+function agregarGlosario() {
+  let o = document.getElementById('termOriginal').value.trim();
+  let tr = document.getElementById('termTraduccion').value.trim();
+  if (!o || !tr) return;
+  glosario.push({ o: o, tr: tr, c: "" });
+  document.getElementById('termOriginal').value = "";
+  document.getElementById('termTraduccion').value = "";
+  renderizarGlosario();
+  guardarTodo();
+  renderizarTodo();
+}
+
+function eliminarGlosario(i) {
+  glosario.splice(i, 1);
+  renderizarGlosario();
+  guardarTodo();
+  renderizarTodo();
+}
+
+// ==================== IA ====================
+function guardarApiKey() {
+  apiKey = document.getElementById('apiKeyInput').value;
+  localStorage.setItem('novatrad_api_key', apiKey);
+  document.getElementById('apiStatusText').innerHTML = '✅ Configurada';
+  mostrarToast("API Key guardada", "🔑");
+}
+
+function cargarApiKey() {
+  let saved = localStorage.getItem('novatrad_api_key');
+  if (saved) {
+    apiKey = saved;
+    document.getElementById('apiKeyInput').value = apiKey;
+    document.getElementById('apiStatusText').innerHTML = '✅ Configurada';
+  }
+}
+
+async function traducirTexto() {
+  if (!apiKey) {
+    mostrarToast("Configura tu API Key de Groq primero (abajo a la izquierda)", "⚠️");
+    return;
+  }
+  
+  let capitulo = capitulos.find(c => c.numero === capituloActual);
+  if (!capitulo || !capitulo.contenido) {
+    mostrarToast("No hay texto para traducir", "⚠️");
+    return;
+  }
+  
+  let spin = document.getElementById('spinAI');
+  spin.classList.add('on');
+  
+  let glosarioTexto = glosario.map(g => `${g.o} → ${g.tr}`).join('\n');
+  let idiomaSrc = document.getElementById('selSrc').value;
+  let idiomaTgt = document.getElementById('selTgt').value;
+  
+  let prompt = `Eres un traductor profesional. Traduce el siguiente texto de ${idiomaSrc} a ${idiomaTgt}.
+  
+GLOSARIO A UTILIZAR (úsalos exactamente así):
+${glosarioTexto}
+
+TEXTO A TRADUCIR:
+${capitulo.contenido}
+
+DEVUELVE SOLO LA TRADUCCIÓN, nada más. Mantén el estilo narrativo.`;
+  
+  try {
+    let respuesta = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'mixtral-8x7b-32768',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    
+    let datos = await respuesta.json();
+    let traduccion = datos.choices[0].message.content;
+    
+    traducciones[capituloActual] = traduccion;
+    document.getElementById('translationText').value = traduccion;
+    guardarTodo();
+    renderizarTodo();
+    mostrarToast("Traducción completada", "✨");
+  } catch (error) {
+    mostrarToast("Error: " + error.message, "❌");
+  }
+  spin.classList.remove('on');
+}
+
+// ==================== GUARDADO ====================
+function guardarTodo() {
+  let estado = {
+    capitulos: capitulos,
+    traducciones: traducciones,
+    glosario: glosario,
+    capituloActual: capituloActual,
+    notas: document.getElementById('notesText').value
+  };
+  localStorage.setItem('novatrad_proyecto_completo', JSON.stringify(estado));
+  document.getElementById('saveStatus').innerHTML = '💾 Guardado';
+  setTimeout(() => { document.getElementById('saveStatus').innerHTML = '💾'; }, 2000);
+  
+  // Actualizar traducción actual
+  if (document.getElementById('translationText').value) {
+    traducciones[capituloActual] = document.getElementById('translationText').value;
+  }
+  actualizarStats();
+}
+
+function cargarProyecto() {
+  let guardado = localStorage.getItem('novatrad_proyecto_completo');
+  if (guardado) {
+    try {
+      let data = JSON.parse(guardado);
+      if (data.capitulos && data.capitulos.length) capitulos = data.capitulos;
+      if (data.traducciones) traducciones = data.traducciones;
+      if (data.glosario) glosario = data.glosario;
+      if (data.capituloActual) capituloActual = data.capituloActual;
+      if (data.notas) document.getElementById('notesText').value = data.notas;
+    } catch(e) {}
+  }
+  renderizarGlosario();
+  if (capitulos.length === 0) {
+    cargarEjemplo();
+  } else {
+    renderizarTodo();
+  }
+}
+
+function cargarEjemplo() {
+  let ejemplo = `Capítulo 1: El Despertar
+
+Había una vez un joven llamado Ling Yun que vivía en las montañas. Un día, mientras meditaba, sintió una extraña energía recorrer su cuerpo.
+
+"¿Qué es esto?" se preguntó.
+
+Desde ese momento, su destino cambiaría para siempre.
+
+Capítulo 2: El Encuentro
+
+En su camino, Ling Yun se encontró con una misteriosa anciana que le entregó un pergamino antiguo.
+
+"Este es tu destino", dijo la anciana antes de desaparecer.`;
+  
+  capitulos = detectarCapitulos(ejemplo);
+  renderizarTodo();
+}
+
+// ==================== SUBIR ARCHIVO ====================
+document.getElementById('fileInput').addEventListener('change', function(e) {
   let archivo = e.target.files[0];
   if (!archivo) return;
+  
   let lector = new FileReader();
   lector.onload = function(ev) {
-    textoOriginal = ev.target.result;
-    mostrarTexto();
-    guardarAuto();
-    mostrarToast('📄', 'Archivo cargado');
+    let contenido = ev.target.result;
+    capitulos = detectarCapitulos(contenido);
+    traducciones = {};
+    glosario = [];
+    capituloActual = capitulos.length ? capitulos[0].numero : 1;
+    renderizarGlosario();
+    renderizarTodo();
+    guardarTodo();
+    mostrarToast(`Cargados ${capitulos.length} capítulos`, "📚");
   };
   lector.readAsText(archivo, 'UTF-8');
   this.value = '';
 });
 
-// ==================== INICIALIZAR ====================
-mostrarTexto();
-renderCapitulos();
-renderGlosario();
-cargarApi();
+function exportarTraduccion() {
+  let texto = document.getElementById('translationText').value;
+  if (!texto) { mostrarToast("No hay traducción para exportar", "⚠️"); return; }
+  let blob = new Blob([texto], {type: 'application/msword'});
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = `capitulo_${capituloActual}.doc`;
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast("Exportado", "📎");
+}
+
+function actualizarIdioma() {
+  let src = document.getElementById('selSrc').value;
+  let tgt = document.getElementById('selTgt').value;
+  document.getElementById('srcLangLabel').innerHTML = src;
+  document.getElementById('tgtLangLabel').innerHTML = tgt;
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('off'); }
+function toggleGlosario() { document.getElementById('glosarioPanel').classList.toggle('off'); }
+
+let apiVisible = true;
+function toggleApi() {
+  let detail = document.getElementById('apiDetail');
+  apiVisible = !apiVisible;
+  detail.style.display = apiVisible ? 'block' : 'none';
+}
+
+// ==================== INICIO ====================
+cargarApiKey();
 cargarProyecto();
-cambiarIdioma();
+actualizarIdioma();
 </script>
 </body>
 </html>
